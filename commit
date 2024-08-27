@@ -22,19 +22,40 @@
 
 #!/bin/bash
 
+# Function to check if a command exists
+command_exists() {
+    command -v "$1" &>/dev/null
+}
+
+# Function to check if the current directory is a git repository
+is_git_repo() {
+    git rev-parse --is-inside-work-tree &>/dev/null
+}
+
+# Function to get the git diff
+get_git_diff() {
+    git diff --cached
+}
+
+# Function to prompt the user for confirmation
+prompt_confirmation() {
+    read -p "Are you satisfied with this commit? (Y/N): " confirm
+    [[ $confirm == [yY] || $confirm == [yY][eE][sS] ]]
+}
+
 # Check if ollama is installed
-if ! command -v ollama &>/dev/null; then
+if ! command_exists ollama; then
     echo "ollama is not installed, please go to https://ollama.com and follow the instructions"
     exit 1
 fi
 
 # Check if the current directory is a git repository
-if ! git rev-parse --is-inside-work-tree &>/dev/null; then
+if ! is_git_repo; then
     echo "Not a git repository"
     exit 1
 fi
 
-diff=$(git diff --cached)
+diff=$(get_git_diff)
 
 # Check if there are changes to commit
 if [ -z "$diff" ]; then
@@ -79,10 +100,8 @@ echo "$commit_message"
 
 echo "\n----------------------------------------"
 
-read -p "Are you satisfied with this commit? (Y/N): " confirm
-
-# Check if the user is satisfied with the commit message
-if [[ $confirm == [yY] || $confirm == [yY][eE][sS] ]]; then
+# Prompt the user for confirmation
+if prompt_confirmation; then
     git commit -m "$commit_message"
     echo "Commit successful"
 else
