@@ -1,0 +1,51 @@
+#!/bin/bash
+
+# Check if the shell configuration file is passed
+if [ "$1" ]; then
+    input=true
+
+    shell_name=$(basename $1)
+else
+    input=false
+
+    # Check what kind of shell is being used
+    if [ -z "$SHELL" ]; then
+        echo "Shell not found"
+        exit 1
+    fi
+
+    # Extract the shell name from the provided shell path
+    shell_name=$(basename $SHELL)
+fi
+
+echo "Using shell: $shell_name \n"
+
+if [[ -z $(find $HOME -maxdepth 1 -type f -name ".$shell_name"rc) ]]; then
+    str="Shell configuration based on your "
+    if [ "$input" = true ]; then
+        str="$str input "
+    else
+        str=$str' $SHELL variable '
+    fi
+    str="$str not found."
+    echo $str
+    echo "You will need to pass your shell configuration file to the script."
+    exit 1
+else
+    echo "Shell configuration file found"
+    rc_path=$(find $HOME -maxdepth 1 -type f -name ".$shell_name"rc)
+fi
+
+# Check if commit alias is defined in the shell configuration file already
+if ! grep -q "alias commit=" $rc_path; then
+    echo -e "\n'commit alias' not found in the shell configuration file."
+    echo "Adding the commit alias to the shell configuration file"
+    echo "alias commit='sh $PWD/commit'" >>$rc_path
+else
+    echo -e "\n'commit alias' found in the shell configuration file."
+    echo "Overwriting the commit alias."
+    sed -i '' "s#alias commit=.*#alias commit='sh $PWD/commit'#" $rc_path
+fi
+
+echo -e "\nPlease run \033[0;31msource $rc_path\033[0m to apply the changes"
+echo "You can then use the 'commit' alias to run the commit script"
