@@ -1,3 +1,25 @@
+# This script is used to create a commit message for changes in a git repository using the ollama tool.
+# It checks if ollama is installed, if the current directory is a git repository, and if there are changes to commit.
+# It prompts the user to provide a commit message in a specific format and then creates the commit if the user confirms.
+
+# Usage: ./commit
+
+# Dependencies:
+# - ollama (https://ollama.com)
+# - git
+
+# Example usage:
+# ./commit
+
+# Example output:
+# <commit message>
+# ----------------------------------------
+# Are you satisfied with this commit? (Y/N):
+
+# Exit codes:
+# - 0: Commit successful
+# - 1: Commit aborted
+
 #!/bin/bash
 
 # Check if ollama is installed
