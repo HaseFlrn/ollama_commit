@@ -1,0 +1,68 @@
+#!/bin/bash
+
+# Check if ollama is installed
+if ! command -v ollama &>/dev/null; then
+    echo "ollama is not installed, please go to https://ollama.com and follow the instructions"
+    exit 1
+fi
+
+# Check if the current directory is a git repository
+if ! git rev-parse --is-inside-work-tree &>/dev/null; then
+    echo "Not a git repository"
+    exit 1
+fi
+
+diff=$(git diff --cached)
+
+# Check if there are changes to commit
+if [ -z "$diff" ]; then
+    echo "No changes to commit. Make sure you add the changes to the staging area before running this command."
+    exit 1
+fi
+
+prompt='''
+You are a seasoned developer, writing your commit message. 
+You must convey the following commit message format:
+
+<type>([scope]): <description>
+
+[optional body]
+
+With <type> being one of the following:
+[ 'build', 'chore', 'ci', 'docs', 'feat', 'fix', 'perf', 'refactor', 'revert', 'style', 'test' ]
+
+Whith scope being an field that is used to specify the module that the commit is related to.
+
+With <description> being a short and concise description of the changes made.
+
+With [optional body] being a more detailed description of the changes made. If it is used, it must be separated from the description by a empty line.
+
+You must create a concise and descriptive commit message based on the following diff:
+
+'$diff'
+
+Only answer with the commit message as plain text and do not describe your reasoning.
+If there are a lot of changes, you are allowed to use bullet points as description body.
+
+- DO NOT LIE.
+- DO NOT HALLUCINATE. 
+- DO NOT ADD ANY NUMBERS OR SPECIAL CHARACTERS.
+- DO NOT ADD A FULL STOP AT THE END.
+'''
+
+# Run the prompt
+commit_message=$(ollama run llama3 "$prompt")
+
+echo "$commit_message"
+
+echo "\n----------------------------------------"
+
+read -p "Are you satisfied with this commit? (Y/N): " confirm
+
+# Check if the user is satisfied with the commit message
+if [[ $confirm == [yY] || $confirm == [yY][eE][sS] ]]; then
+    git commit -m "$commit_message"
+    echo "Commit successful"
+else
+    echo "Commit aborted"
+fi
