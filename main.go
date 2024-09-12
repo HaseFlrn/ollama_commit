@@ -45,7 +45,11 @@ func checkPrerequisites() {
 		fmt.Println("Git is not installed. Please install Git and try again.")
 		os.Exit(1)
 	}
-	// Add more checks here (ollama,...)
+
+	if !commandExists("ollama") {
+		fmt.Println("Ollama is not installed. Please install Ollama and try again.")
+		os.Exit(1)
+	}
 }
 
 func commandExists(cmd string) bool {

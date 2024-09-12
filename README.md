@@ -1,42 +1,72 @@
-# ollama_commit
+# Ollama Commit
 
-## Overview
+Ollama Commit is a tool designed to help developers generate concise and descriptive commit messages based on the changes in their Git repository. By leveraging a local AI model, it ensures that commit messages follow a specific format and are both informative and standardized.
 
-`ollama_commit` is a shell script that sets up an alias for a commit script in your shell configuration file. This allows you to easily run the commit script using the `commit` command.
+## Features
 
-## Prerequisites
+- **Automated Commit Message Generation**: Generates commit messages based on the diff of staged changes.
+- **Configurable AI Model**: Uses a local AI model to generate commit messages.
+- **Prerequisite Checks**: Ensures that necessary tools like Git and Ollama are installed and running.
+- **Interactive Confirmation**: Prompts the user for confirmation before committing changes.
 
-Before you begin, ensure you have met the following requirements:
+## Installation
 
-- You have a Unix-based operating system (Linux, macOS).
-- You have a terminal application installed.
-- You have write access to your shell configuration file (e.g., `.bashrc`, `.zshrc`).
-- You have [Ollama](https://ollama.com/download) installed on your machine.
+:::info
+Currently only the self-installation via go-cli and manually setting the PATH is available. This will change in the future. ([see here](./TODO.md))
+:::
 
-## Setup
-
-To set up the `commit` alias, run the `setup` script. The script will check your shell configuration file and add the alias if it is not already present.
-
-### Steps
-
-1. Open a terminal.
-2. Navigate to the directory containing the `setup` script.
-3. Run the setup script:
+1. **Clone the Repository**:
 
    ```sh
-   ./setup
+   git clone https://github.com/HaseFlrn/ollama_commit.git
+   cd ollama_commit
    ```
 
-4. If your shell configuration file is not found, you will need to pass it as an argument:
+2. **Install Dependencies**:
+   Ensure you have Go installed. Then, run:
 
    ```sh
-   ./setup /path/to/your/shell/config
+   go mod tidy
+   ```
+
+3. **Build the Project**:
+
+   ```sh
+   go build -o ollama_commit
    ```
 
 ## Usage
 
-After running the setup script, source your shell configuration file to apply the changes:
+1. **Start Ollama**:
+   Ensure that the Ollama service is running on `http://localhost:11434/`.
+
+2. **Run the Tool**:
+   Navigate to your Git repository and run:
+
+   ```sh
+   /path/to/ollama_commit
+   ```
+
+3. **Follow the Prompts**:
+   - The tool will check if you are inside a Git repository.
+   - It will then generate a commit message based on the staged changes.
+   - You will be prompted to confirm the commit message before it is committed to the repository.
+
+## Example
 
 ```sh
-source ~/.bashrc  # or ~/.zshrc, depending on your shell
+cd /path/to/your/git/repo
+/path/to/ollama_commit
 ```
+
+## Configuration
+
+Currently, the AI model used for generating commit messages is hardcoded to llama3. Future versions may include options to configure the model and other parameters.
+
+## Contributing
+
+Contributions are welcome! Please fork the repository and submit a pull request.
+
+## License
+
+This project is licensed under the MIT License. See the LICENSE file for details.
