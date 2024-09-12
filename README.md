@@ -11,9 +11,8 @@ Ollama Commit is a tool designed to help developers generate concise and descrip
 
 ## Installation
 
-:::info
-Currently only the self-installation via go-cli and manually setting the PATH is available. This will change in the future. ([see here](./TODO.md))
-:::
+> [!NOTE]
+> Currently only the self-installation via go-cli and manually setting the PATH is available. This will change in the future. ([see here](./TODO.md))
 
 1. **Clone the Repository**:
 

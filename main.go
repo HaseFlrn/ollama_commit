@@ -150,7 +150,7 @@ func askOllama(prompt string) string {
 		"prompt": prompt,
 		"stream": false,
 		"options": map[string]float32{
-			"temperature": 0.1,
+			"temperature": 0.3,
 		},
 	}
 
