@@ -50,6 +50,16 @@ func checkPrerequisites() {
 		fmt.Println("Ollama is not installed. Please install Ollama and try again.")
 		os.Exit(1)
 	}
+
+	ollamaServerRunning()
+}
+
+func ollamaServerRunning() {
+	_, err := http.Get("http://127.0.0.1:11434/")
+	if err != nil {
+		fmt.Println("Ollama is not running! Please start by `ollama serve`")
+		os.Exit(1)
+	}
 }
 
 func commandExists(cmd string) bool {
