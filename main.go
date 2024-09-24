@@ -13,7 +13,7 @@ import (
 	"strings"
 )
 
-func main () {
+func main() {
 	config.GetConfig()
 	checkPrerequisites()
 	result := isGitRepo()
@@ -38,7 +38,7 @@ func main () {
 		os.Exit(0)
 	}
 
-	// Commit the changes to the repo 
+	// Commit the changes to the repo
 	commitChanges(commitMessage)
 
 }
@@ -72,7 +72,7 @@ func commandExists(cmd string) bool {
 
 func isGitRepo() bool {
 	_, err := exec.Command("git", "rev-parse", "--is-inside-work-tree", "&>/dev/null").Output()
-	return err != nil 
+	return err != nil
 }
 
 func getGitDiff() string {
@@ -135,18 +135,18 @@ If there are a lot of changes, you are allowed to use bullet points as descripti
 }
 
 type OllamaResponse struct {
-	Model string `json:"model"`
-	Created_At string `json:"created_at"`
-	Response string `json:"response"`
-	Done bool `json:"done"`
-	Done_Reason string `json:"done_reason"`
-	Context []int `json:"context"`
-	Total_Duration int `json:"total_duration"`
-	Load_Duration int `json:"load_duration"`
-	Prompt_Eval_Count int `json:"prompt_eval_count"`
-	Prompt_Eval_Duration int `json:"prompt_eval_duration"`
-	Eval_Count int `json:"eval_count"`
-	Eval_Duration int `json:"eval_duration"` 
+	Model                string `json:"model"`
+	Created_At           string `json:"created_at"`
+	Response             string `json:"response"`
+	Done                 bool   `json:"done"`
+	Done_Reason          string `json:"done_reason"`
+	Context              []int  `json:"context"`
+	Total_Duration       int    `json:"total_duration"`
+	Load_Duration        int    `json:"load_duration"`
+	Prompt_Eval_Count    int    `json:"prompt_eval_count"`
+	Prompt_Eval_Duration int    `json:"prompt_eval_duration"`
+	Eval_Count           int    `json:"eval_count"`
+	Eval_Duration        int    `json:"eval_duration"`
 }
 
 func askOllama(prompt string) string {
@@ -156,10 +156,9 @@ func askOllama(prompt string) string {
 		os.Exit(1)
 	}
 
-
 	// TODO: Make model configurable
 	requestData := map[string]interface{}{
-		"model": "llama3",
+		"model":  "llama3",
 		"prompt": prompt,
 		"stream": false,
 		"options": map[string]float32{
@@ -173,7 +172,7 @@ func askOllama(prompt string) string {
 		os.Exit(1)
 	}
 
-	r, _ := http.NewRequest("POST","http://localhost:11434/api/generate", bytes.NewBuffer(jsonData) )
+	r, _ := http.NewRequest("POST", "http://localhost:11434/api/generate", bytes.NewBuffer(jsonData))
 	r.Header.Set("Content-Type", "application/json")
 
 	client := &http.Client{}
@@ -185,7 +184,7 @@ func askOllama(prompt string) string {
 
 	defer resp.Body.Close()
 
-	body,_:= io.ReadAll(resp.Body)
+	body, _ := io.ReadAll(resp.Body)
 
 	var ollamaResponse OllamaResponse
 	err = json.Unmarshal(body, &ollamaResponse)
@@ -193,7 +192,7 @@ func askOllama(prompt string) string {
 		fmt.Printf("Error while unmarshalling JSON data. %v\n", err)
 		os.Exit(1)
 	}
-	
+
 	return ollamaResponse.Response
 }
 
@@ -204,4 +203,3 @@ func commitChanges(commitMessage string) {
 		log.Fatal(err)
 	}
 }
-
