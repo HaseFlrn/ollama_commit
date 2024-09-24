@@ -51,15 +51,15 @@ func checkPrerequisites() {
 		os.Exit(1)
 	}
 
-	ollamaServerRunning()
-}
-
-func ollamaServerRunning() {
-	_, err := http.Get("http://127.0.0.1:11434/")
-	if err != nil {
+	if !isOllamaServerRunning() {
 		fmt.Println("Ollama is not running! Please start by `ollama serve`")
 		os.Exit(1)
 	}
+}
+
+func isOllamaServerRunning() bool {
+	_, err := http.Get("http://127.0.0.1:11434/")
+	return err == nil
 }
 
 func commandExists(cmd string) bool {
