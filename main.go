@@ -1,6 +1,7 @@
 package main
 
 import (
+	config "HaseFlrn/ollama_commit/lib"
 	"bytes"
 	"encoding/json"
 	"fmt"
@@ -13,6 +14,7 @@ import (
 )
 
 func main () {
+	config.GetConfig()
 	checkPrerequisites()
 	result := isGitRepo()
 
@@ -38,6 +40,7 @@ func main () {
 
 	// Commit the changes to the repo 
 	commitChanges(commitMessage)
+
 }
 
 func checkPrerequisites() {
@@ -201,3 +204,4 @@ func commitChanges(commitMessage string) {
 		log.Fatal(err)
 	}
 }
+
