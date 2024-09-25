@@ -1,7 +1,8 @@
 package main
 
 import (
-	config "HaseFlrn/ollama_commit/lib"
+	config "HaseFlrn/ollama_commit/cmd"
+
 	"bytes"
 	"encoding/json"
 	"fmt"
@@ -14,7 +15,21 @@ import (
 )
 
 func main() {
-	config.GetConfig()
+
+	arg := os.Args
+	if len(arg) <= 1 {
+		llmCommit()
+		os.Exit(0)
+	} else if len(arg) > 1 && arg[1] == "config" {
+		config.Config()
+		os.Exit(0)
+	} else {
+		fmt.Println("Invalid usage. Please run `ollama_commit` without any arguments or `config`.")
+		os.Exit(1)
+	}
+}
+
+func llmCommit() {
 	checkPrerequisites()
 	result := isGitRepo()
 
