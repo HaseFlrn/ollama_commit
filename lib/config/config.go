@@ -9,7 +9,7 @@ import (
 
 type Config struct {
 	Model       string
-	Ollama_Port int16
+	Ollama_Port int
 	Temperature float32
 }
 
