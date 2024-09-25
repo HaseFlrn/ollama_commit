@@ -66,7 +66,7 @@ func readConfig(path string) Config {
 		fmt.Printf("Failed to read config file:\n%v", err)
 	}
 
-	fmt.Printf("%+v\n", config)
+	// fmt.Printf("%+v\n", config)
 	return config
 }
 
@@ -86,7 +86,6 @@ func writeConfig(path string, config Config) {
 	os.WriteFile(path, configJson, 0644)
 }
 
-// Todo
 func UpdateConfig(updateConfigDTO Config) {
 	configPath := getConfigPath()
 	updateConfig(configPath, updateConfigDTO)

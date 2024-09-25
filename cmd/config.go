@@ -2,6 +2,7 @@ package config
 
 import (
 	"fmt"
+	"os"
 	"os/exec"
 	"sort"
 	"strconv"
@@ -17,6 +18,7 @@ func Config() {
 	persistedConf := config.GetConfig()
 
 	newConfig := persistedConf
+	save := false
 
 	// Create a new huh form
 	form := huh.NewForm(
@@ -34,12 +36,26 @@ func Config() {
 				Title(fmt.Sprintf("Chose the port (current: %d)", persistedConf.Ollama_Port)).
 				Validate(validatePort).
 				Value(&newConfig.Ollama_Port),
+			huh.NewConfirm().
+				Title("Save Config?").
+				DescriptionFunc(func() string {
+					return fmt.Sprintf("Currently we would save the following configuration:\n\tModel: %s\n\tTemperature: %f\n\tOllama's server port: %d",
+						newConfig.Model, newConfig.Temperature, newConfig.Ollama_Port)
+				}, &newConfig).
+				Affirmative("Save").
+				Negative("Cancel").
+				Value(&save),
 		),
 	)
 
 	form.Run()
 
-	fmt.Printf("New Config: %+v\n", newConfig)
+	if save {
+		config.UpdateConfig(newConfig)
+	} else {
+		fmt.Println("Configuration not saved.")
+		os.Exit(0)
+	}
 
 }
 
