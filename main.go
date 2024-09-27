@@ -46,6 +46,7 @@ func llmCommit(config lib.Config) {
 	prompt := buildPrompt(diff)
 
 	// Build the commit message
+	fmt.Println("Building commit message...")
 	commitMessage := askOllama(prompt, config)
 
 	fmt.Printf("Commit Message:\n\n%v\n", commitMessage)
