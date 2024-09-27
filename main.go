@@ -2,6 +2,7 @@ package main
 
 import (
 	config "HaseFlrn/ollama_commit/cmd"
+	lib "HaseFlrn/ollama_commit/lib/config"
 
 	"bytes"
 	"encoding/json"
@@ -18,7 +19,8 @@ func main() {
 
 	arg := os.Args
 	if len(arg) <= 1 {
-		llmCommit()
+		conf := lib.GetConfig()
+		llmCommit(conf)
 		os.Exit(0)
 	} else if len(arg) > 1 && arg[1] == "config" {
 		config.Config()
@@ -29,7 +31,7 @@ func main() {
 	}
 }
 
-func llmCommit() {
+func llmCommit(config lib.Config) {
 	checkPrerequisites()
 	result := isGitRepo()
 
@@ -44,7 +46,7 @@ func llmCommit() {
 	prompt := buildPrompt(diff)
 
 	// Build the commit message
-	commitMessage := askOllama(prompt)
+	commitMessage := askOllama(prompt, config)
 
 	fmt.Printf("Commit Message:\n\n%v\n", commitMessage)
 
@@ -164,7 +166,7 @@ type OllamaResponse struct {
 	Eval_Duration        int    `json:"eval_duration"`
 }
 
-func askOllama(prompt string) string {
+func askOllama(prompt string, config lib.Config) string {
 	_, err := http.Get("http://localhost:11434/")
 	if err != nil {
 		fmt.Println("Ollama is not running. Please start Ollama and try again.")
@@ -173,11 +175,11 @@ func askOllama(prompt string) string {
 
 	// TODO: Make model configurable
 	requestData := map[string]interface{}{
-		"model":  "llama3",
+		"model":  config.Model,
 		"prompt": prompt,
 		"stream": false,
 		"options": map[string]float32{
-			"temperature": 0.3,
+			"temperature": config.Temperature,
 		},
 	}
 
@@ -187,7 +189,9 @@ func askOllama(prompt string) string {
 		os.Exit(1)
 	}
 
-	r, _ := http.NewRequest("POST", "http://localhost:11434/api/generate", bytes.NewBuffer(jsonData))
+	path := fmt.Sprintf("http://localhost:%d/api/generate", config.Ollama_Port)
+
+	r, _ := http.NewRequest("POST", path, bytes.NewBuffer(jsonData))
 	r.Header.Set("Content-Type", "application/json")
 
 	client := &http.Client{}
