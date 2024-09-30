@@ -62,7 +62,8 @@ Ollama Commit is a tool designed to help developers generate concise and descrip
 
 ## Configuration
 
-> [!WARNING] We don't change the port for the running ollama server, we only take the value sent by you to communicate with the server on the specified port.
+> [!WARNING]
+> We don't change the port for the running ollama server, we only take the value sent by you to communicate with the server on the specified port.
 
 You don't need to do anything here, if you don't want to. The currently used default values are:
 
