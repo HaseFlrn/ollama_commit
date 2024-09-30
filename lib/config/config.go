@@ -72,7 +72,7 @@ func readConfig(path string) Config {
 
 func writeDefaultsConfig(path string) {
 	defaultConfig := Config{
-		Model:       "llama3",
+		Model:       "llama3:latest",
 		Ollama_Port: 11434,
 		Temperature: 1.0,
 	}
